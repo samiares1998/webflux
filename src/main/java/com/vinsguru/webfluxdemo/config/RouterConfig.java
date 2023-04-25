@@ -29,8 +29,8 @@ public class RouterConfig {
 
     public RouterFunction<ServerResponse> serverResponseRouterFunction(){
         return RouterFunctions.route()
-                .GET("square/{input}", requestHandler::squareHandler)
-                .GET("square/{input}",requestHandler::tableHandler)
+                .GET("square/{input}", requestHandler::squareHandler)//I can manipulate the request how I want// RequestPredicates.path("*/1?").or
+                .GET("square/{input}",requestHandler::tableHandler)//I can manipulate the response how I want//res->
                 .POST("multiply", requestHandler::multiplyHandler)
                 .GET("squareHandle/{input}",requestHandler::squareHandlerWithValidation)
                 .onError(InputValidationException.class, exceptionHandler())
