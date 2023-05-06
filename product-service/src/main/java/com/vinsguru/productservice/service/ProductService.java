@@ -7,10 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Range;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.publisher.Sinks;
 
 public class ProductService {
     @Autowired
     private ProductRepository repository;
+
+    @Autowired
+    private Sinks.Many<ProductDto> sink;
 
     public Flux<ProductDto> getAll(){
         return this.repository.findAll()
@@ -24,8 +28,9 @@ public class ProductService {
         return productDtoMono
                 .map(EntityDtoUtil::toEntity)
                 .flatMap(this.repository::insert)
-                .map(EntityDtoUtil::toDto);
-               // .doOnNext(this.sink::tryEmitNext);
+                .map(EntityDtoUtil::toDto)
+                .doOnNext(this.sink::tryEmitNext); // me emite al bean sink para luego ser consumido por el endpoint que esta en
+        //productStreamcoNTROLLER
     }
     public Mono<ProductDto> updateProduct(String id, Mono<ProductDto> productDtoMono){
         return this.repository.findById(id)
